@@ -13,9 +13,13 @@ import com.example.feature.filters.PercentageFilter;
 public class HelloWorld {
 
     public static void main(String[] args) throws IOException {
+    	// Update this String to be your Connection String
         String connectionString = "yourConnectionString";
+        
+        // Map of Feature Filters in use.
         HashMap<String, FeatureFilter> featureFilters = new HashMap<String, FeatureFilter>();
         featureFilters.put("percentageFilter", new PercentageFilter());
+        
         FeatureManager featureManager = new FeatureManager(connectionString, featureFilters);
         
         if (featureManager.isEnabledAsync("Beta").block()) {
