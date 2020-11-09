@@ -46,6 +46,7 @@ public class FeatureManager {
      * given configuration store.
      * 
      * @param connectionString Connection String to your App Configuration instance
+     * @param label The label of the feature flags use.
      * @param featureFilters   Map of the Feature Filters in use.
      * @throws IOException thrown if feature filters returned from App Configuration
      *                     aren't valid Feature Filters.

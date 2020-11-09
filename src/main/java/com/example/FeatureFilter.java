@@ -8,8 +8,7 @@ package com.example;
 import com.example.entity.FeatureFilterEvaluationContext;
 
 /**
- * A Filter for Feature Management that is attached to Features. The filter needs to
- * have @Component set to be found by feature management.
+ * A Filter for Feature Management that is attached to Features.
  */
 public interface FeatureFilter {
 
