@@ -41,6 +41,15 @@ public class FeatureManager {
 
     private HashMap<String, Boolean> onOff;
 
+    /**
+     * Creates a FeatureManager that is loaded with your feature flags from the
+     * given configuration store.
+     * 
+     * @param connectionString Connection String to your App Configuration instance
+     * @param featureFilters   Map of the Feature Filters in use.
+     * @throws IOException thrown if feature filters returned from App Configuration
+     *                     aren't valid Feature Filters.
+     */
     public FeatureManager(String connectionString, String label, HashMap<String, FeatureFilter> featureFilters) throws IOException {
         this.featureFilters = featureFilters;
         ConfigurationClientBuilder builder = new ConfigurationClientBuilder();
@@ -59,8 +68,7 @@ public class FeatureManager {
         }
     }
 
-    private FeatureSet createFeatureSet(PagedIterable<ConfigurationSetting> settings)
-            throws IOException {
+    private FeatureSet createFeatureSet(PagedIterable<ConfigurationSetting> settings) throws IOException {
         FeatureSet featureSet = new FeatureSet();
         // Reading In Features
         for (ConfigurationSetting setting : settings) {
@@ -74,6 +82,8 @@ public class FeatureManager {
 
     private Object createFeature(ConfigurationSetting item) throws IOException {
         Feature feature = null;
+
+        // Validates the Content Type of the Feature Flag
         if (item.getContentType() != null && item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
             try {
                 String key = item.getKey().trim().substring(FEATURE_FLAG_PREFIX.length());
@@ -107,9 +117,12 @@ public class FeatureManager {
     @SuppressWarnings("unchecked")
     private void addToFeatures(HashMap<String, Object> features, String key, String combined) {
         Object featureKey = features.get(key);
+        // Not supported in this example is Feature Flags from local files. This deals
+        // with flags with '.' in there name.
         if (!combined.isEmpty() && !combined.endsWith(".")) {
             combined += ".";
         }
+        
         if (featureKey instanceof Boolean) {
             onOff.put(combined + key, (Boolean) featureKey);
         } else {
@@ -138,10 +151,10 @@ public class FeatureManager {
     }
 
     /**
-     * Checks to see if the feature is enabled. If enabled it check each filter, once a
-     * single filter returns true it returns true. If no filter returns true, it returns
-     * false. If there are no filters, it returns true. If feature isn't found it returns
-     * false.
+     * Checks to see if the feature is enabled. If enabled it check each filter,
+     * once a single filter returns true it returns true. If no filter returns true,
+     * it returns false. If there are no filters, it returns true. If feature isn't
+     * found it returns false.
      * 
      * @param feature Feature being checked.
      * @return state of the feature
@@ -163,14 +176,15 @@ public class FeatureManager {
         if (boolFeature != null) {
             return boolFeature;
         } else if (featureItem == null) {
+            // Response to an Unknown Feature Flag is to return false.
             return false;
         }
 
+        // Checks every feature filter until at least one returns true. If so returns true, else false.
         for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor().values()) {
             if (filter != null && filter.getName() != null) {
                 if (!featureFilters.containsKey(filter.getName())) {
-                    String message = "Was unable to find Filter " + filter.getName()
-                            + ".";
+                    String message = "Was unable to find Filter " + filter.getName() + ".";
                     throw new FilterNotFoundException(message, filter);
                 }
                 FeatureFilter featureFilter = featureFilters.get(filter.getName());

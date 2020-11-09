@@ -8,8 +8,7 @@ import com.example.entity.FeatureFilterEvaluationContext;
 
 /**
  * This class defines a custom exception type for when an expected Filter is not found
- * when checking if a Feature is enabled. A FilterNotFoundException is only thrown when
- * failfast is enabled, which is true by default.
+ * when checking if a Feature is enabled.
  *
  */
 public class FilterNotFoundException extends RuntimeException {
