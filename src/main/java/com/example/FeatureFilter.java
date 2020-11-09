@@ -1,12 +1,11 @@
-package com.example;
-import com.example.entity.FeatureFilterEvaluationContext;
-
 /*
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
+package com.example;
 
+import com.example.entity.FeatureFilterEvaluationContext;
 
 /**
  * A Filter for Feature Management that is attached to Features. The filter needs to
